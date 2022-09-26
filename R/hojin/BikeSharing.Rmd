@@ -1,0 +1,236 @@
+---
+title: "BikeSharing"
+author: "HOJIN LEE"
+date: "2022-08-08"
+output: html_document
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(warning = F)
+knitr::opts_chunk$set(message =  F)
+```
+
+## 10886개의 관측값, 12개의 변수
+```{r}
+df <- read.csv("train.csv", header = T)
+str(df)
+```
+
+# df의 season과 weather 타입 변경
+```{r}
+df$season <- factor(df$season, labels = c("Spring", "Summer", "Fall", "Winter"))
+df$weather <- factor(df$weather, labels = c("Good", "Normal", "Bad", "Very Bad"))
+```
+
+## NA 값 확인
+```{r}
+for (i in 1:length(df)){
+    cat(colnames(df)[i],sum(is.na(df[,i])),'\n')
+}
+```
+
+# 열에 대한 정보 확인
+```{r}
+summary(df)
+```
+
+## df head 확인
+```{r}
+head(df)
+```
+
+# 새로운 열 만들기
+# 수치형으로 표현하기 위해 날짜 데이터는
+# 년, 월, 시간, 요일로 따로 데이터를 부르기
+```{r}
+library(dplyr)
+library(lubridate)
+traindf <- df %>%
+    select(-casual, -registered) %>%
+    mutate(
+        year = year(datetime),
+        month = month(datetime),
+        hour = hour(datetime),
+        wday = wday(datetime))
+```
+
+# 타입 변경
+```{r}
+traindf$season <- factor(traindf$season, labels = c("Spring", "Summer", "Fall", "Winter"))
+traindf$weather <- factor(traindf$weather, labels = c("Good", "Normal", "Bad", "Very Bad"))
+traindf$holiday <- factor(traindf$holiday) # 0: 평일, 1:휴일
+traindf$workingday <- factor(traindf$workingday) # 0: 휴일, 1:평일
+traindf$year <- factor(traindf$year)
+traindf$month <- factor(traindf$month)
+traindf$hour <- factor(traindf$hour)
+traindf$wday <- factor(traindf$wday, labels = c("Sun", "Mon", "Tue", "Wed", "Thu","Fir","Sat"))
+```
+
+# 타입 변경 확인 및 열에 대한 정보 확인
+```{r}
+str(traindf)
+summary(traindf)
+```
+
+# 컬럼 설명
+### datetime: hourly date + timestamp
+### season: 1=봄, 2=여름, 3=가을, 4=겨울
+### holiday: 1=주말을 제외한 국경일 등의 휴일, 0=휴일이 아닌 날
+### workingday: 1=주말 및 휴일이 아닌 주중, 0=주말 및 휴일
+### weather:
+## 1=맑음, 약간 구름 낀 흐림
+## 2=안개, 안개 + 흐림
+## 3=가벼운 눈, 가벼운 비 + 천둥
+## 4=심한 눈/비, 천둥/번개
+### temp: 온도(섭씨)
+### atemp: 체감온도(섭씨)
+### humidity: 상대습도
+### windspeed: 풍속
+### casual: 사전에 등록되지 않은 사용자가 대여한 횟수
+### registered: 사전에 등록된 사용자가 대여한 횟수
+### count: 대여 횟수
+
+
+# season의 갯수와 NA 갯수 확인
+```{r}
+table(traindf$season,useNA='always')
+barplot(table(traindf$season), ylim=c(0,3000))
+```
+
+# weather의 갯수와 NA 갯수 확인
+```{r}
+table(traindf$weather,useNA='always')
+barplot(table(traindf$weather), ylim=c(0,8000))
+```
+
+
+## holiday의 갯수와 NA 갯수 확인
+```{r}
+table(traindf$holiday,useNA='always')
+barplot(table(traindf$holiday), ylim=c(0,13000))
+```
+
+# 11년도 12년도의 시간대별 자전거 대여 횟수
+```{r}
+ye_ho_total<-traindf%>%
+    group_by(year,hour)%>%
+    summarise(to=sum(count))
+summary(ye_ho_total)
+barplot(to~year+hour,data=ye_ho_total)
+```
+
+# 11년도 12년도 각각의 시간대별 대여 횟수 그래프
+```{r}
+b<-ye_ho_total[ye_ho_total$year==2011,]
+c<-ye_ho_total[ye_ho_total$year==2012,]
+
+par(mfrow=c(1,2))
+mycolor<-ifelse(b$to>60000,'blue','yellow')
+barplot(to~hour,data=b, xlab='2011',col=mycolor)
+
+mycolor<-ifelse(c$to>100000,'blue','yellow')
+barplot(to~hour,data=c, xlab='2012',col=mycolor)
+traindf$year<-factor(traindf$year)
+```
+
+# 계절별 날씨에 대한 만족 건수
+```{r}
+se_we_count<-traindf%>%
+    group_by(season,weather)%>%
+    summarise(su=n(), .groups = "drop_last")
+
+se_we_count
+barplot(su~weather+season,data=se_we_count)
+```
+
+# 계절별 대여수
+```{r}
+se_cou_count<-traindf%>%
+    group_by(season)%>%
+    summarise(se=sum(count))
+
+se_cou_count
+barplot(se~season,data=se_cou_count)
+```
+
+# 섭씨 온도별 대여수
+```{r}
+te_cou_count<-traindf%>%
+    group_by(temp)%>%
+    summarise(te=sum(count))
+
+te_cou_count
+barplot(te~temp,data=te_cou_count)
+```
+
+# 상대 습도별 대여수
+```{r}
+hu_cou_count<-traindf%>%
+    group_by(humidity)%>%
+    summarise(hu=sum(count))
+
+hu_cou_count
+barplot(hu~humidity,data=hu_cou_count)
+```
+
+# 풍속 별 대여수
+```{r}
+wi_cou_count<-traindf%>%
+    group_by(windspeed)%>%
+    summarise(wi=sum(count))
+
+wi_cou_count
+barplot(wi~windspeed,data=wi_cou_count)
+```
+
+# 섭씨 온도, 섭씨 온도 체감, 상대 습도, 풍속 상관계수 비교 및 그래프
+```{r}
+library(corrplot)
+traindf_nu <- traindf[, 6:9]
+cor_matrix <- cor(traindf_nu)
+cor_matrix
+par(mfrow=c(1,1))
+corrplot(cor_matrix)
+```
+
+
+# 계절별 미등록 사용자 대여수 (1:봄, 2:여름, 3:가을, 4:겨울)
+```{r}
+se_ca_count<-df%>%
+    group_by(season)%>%
+    summarise(ca=sum(casual))
+
+se_ca_count
+barplot(ca~season,data=se_ca_count)
+```
+
+# 계절별 등록 사용자 대여수 (1:봄, 2:여름, 3:가을, 4:겨울)
+```{r}
+ssn_ca_count<-df%>%
+    group_by(season)%>%
+    summarise(ssn=sum(registered))
+
+ssn_ca_count
+barplot(ssn~season,data=ssn_ca_count)
+```
+
+# 날씨별 미등록 사용자 대여수 (1:맑음, 2:보통, 3:안좋음, 4.매우 안좋음)
+```{r}
+wea_ca_count<-df%>%
+    group_by(weather)%>%
+    summarise(wea=sum(casual))
+
+wea_ca_count
+barplot(wea~weather,data=wea_ca_count)
+```
+
+# 날씨별 등록 사용자 대여수 (1:맑음, 2:보통, 3:안좋음, 4:매우 안좋음)
+```{r}
+re_ca_count<-df%>%
+    group_by(weather)%>%
+    summarise(re=sum(registered))
+
+re_ca_count
+barplot(re~weather,data=re_ca_count)
+```
+
