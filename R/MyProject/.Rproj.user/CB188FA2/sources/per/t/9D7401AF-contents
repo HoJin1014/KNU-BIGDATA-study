@@ -1,0 +1,72 @@
+---
+title: "Penguins Dataset Analysis Report"
+author: "HOJIN LEE"
+date: "2022-08-08"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r}
+library(palmerpenguins)
+library(psych)
+describe(penguins)
+```
+
+
+## 이제부터 그림을 그려볼거야.
+
+이런 순서로 해보자.
+
+1. 부리 길이 - 부리 깊이 의 산점도를 그린다.
+  * 음의 상관이 있는 것처럼 보이는가?
+  * 이것은 Simpson's Paradox로 인한 것이다.
+2. 펭귄의 종별로 색깔을 입힌다.
+  * 종별로 구분하니 양의 상관이 있는 것처럼 보이지 않는가?
+  * 심슨의 역설은 우리가 조심해야 할 통계의 함정이다.
+  
+```{r}
+
+plot(penguins$species, col = 2:4)
+```
+
+
+
+
+```{r}
+# as.numeric(penguins$species)+1
+plot(penguins$bill_depth_mm, penguins$bill_length_mm, pch = 19, col = as.numeric(penguins$species)+1)
+```
+
+
+## 이제부터 그림을 그려볼거야.
+
+이런 순서로 해보자.
+1. 부리 길이 - 부리 깊이 의 산점도를 그린다.
+  * 음의 상관이 있는 것처럼 보이는가?
+  * 이것은 *Simpson's Paradox*로 인한 것이다.
+2. 펭귄의 종별로 색깔을 입힌다.
+  * 종별로 구분하니 양의 상관이 있는 것처럼 보이지 않는가?
+  * **심슨의 역설**은 우리가 조심해야 할 통계의 함정이다.
+
+```{r}
+df <- na.omit(penguins)
+plot(bill_depth_mm ~ bill_length_mm, data = df,
+     pch = 19, col = "tomato")
+
+plot(bill_depth_mm ~ bill_length_mm, data = df,
+     pch = 19, col = as.numeric(penguins$species)+1)
+```
+

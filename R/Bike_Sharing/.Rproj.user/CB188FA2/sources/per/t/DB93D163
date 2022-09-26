@@ -1,0 +1,26 @@
+{
+    "id": "DB93D163",
+    "path": "C:/RProject/First_Project/Titanic.Rmd",
+    "project_path": null,
+    "type": "r_markdown",
+    "hash": "3270317270",
+    "contents": "",
+    "dirty": false,
+    "created": 1659937871594.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "14,3",
+        "scrollLine": "3"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1659935368,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1659935368,
+    "read_only": false,
+    "read_only_alternatives": []
+}

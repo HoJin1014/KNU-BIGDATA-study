@@ -1,0 +1,3 @@
+"0",""
+"0","plot(bill_depth_mm ~ bill_length_mm, data = df,"
+"0","     pch = 19, col = as.numeric(penguins$species)+1)"

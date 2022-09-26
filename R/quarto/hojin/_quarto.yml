@@ -1,0 +1,19 @@
+project:
+  type: website
+
+website:
+  title: "hojin's portfolio"
+  navbar:
+    left:
+      - href: index.qmd
+        text: 홈
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

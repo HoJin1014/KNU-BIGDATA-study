@@ -1,0 +1,41 @@
+---
+title: "타이타닉 데이터 분석"
+author: "HOJIN LEE"
+date: "2022-08-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- read.csv("./titanic/train.csv", header = T)
+str(df)
+```
+
+## 승객 등급별 사망여부
+
+```{r}
+mosaicplot(Pclass ~ Survived, data = df,
+           col = 2:4)
+```
+
+
+## 출발 항구별 승객수는 얼마일까요?
+
+```{r}
+table(df$Embarked)
+barplot(table(df$Embarked), col = 2:4)
+```
+
+
+# 결측치 분포는 어떠할까요?
+
+```{r}
+library(VIM)
+aggr(df, numbers = T, prop = F)
+dim(df)
+```
+
+

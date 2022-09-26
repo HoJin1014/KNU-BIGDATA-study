@@ -1,0 +1,27 @@
+{
+    "id": "E5F37B82",
+    "path": "C:/RProject/MyShinyApp/practice.R",
+    "project_path": "practice.R",
+    "type": "r_source",
+    "hash": "2713986848",
+    "contents": "",
+    "dirty": false,
+    "created": 1661130813074.0,
+    "source_on_save": false,
+    "relative_order": 11,
+    "properties": {
+        "tempName": "Untitled2",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "336,0",
+        "scrollLine": "323"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1661218460,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1661218460980,
+    "read_only": false,
+    "read_only_alternatives": []
+}

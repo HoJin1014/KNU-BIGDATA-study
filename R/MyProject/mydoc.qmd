@@ -1,0 +1,16 @@
+---
+title: "VSCode가 짱 먹음"
+---
+
+## Visual Studio Code
+
+
+```{r}
+str(iris)
+plot(iris[, -5], pch = 19, col = "tomato")
+```
+
+
+```{python}
+print("Hello, World!")
+```

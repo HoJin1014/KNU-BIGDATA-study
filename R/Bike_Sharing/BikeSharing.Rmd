@@ -1,0 +1,21 @@
+---
+title: "BikeSharing"
+author: "HOJIN LEE"
+date: "2022-08-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- read.csv("./bike-sharing-demand/train.csv", header = T)
+str(df)
+```
+
+```{r}
+df1 <- read.csv("./bike-sharing-demand/test.csv", header = T)
+str(df1)
+```
+

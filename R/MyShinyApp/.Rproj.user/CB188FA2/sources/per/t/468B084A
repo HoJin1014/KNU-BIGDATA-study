@@ -1,0 +1,26 @@
+{
+    "id": "468B084A",
+    "path": "C:/RProject/MyShinyApp/이름 바꾸기.R",
+    "project_path": "이름 바꾸기.R",
+    "type": "r_source",
+    "hash": "21378251",
+    "contents": "",
+    "dirty": false,
+    "created": 1661130806218.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "23,1",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1661130649,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1661130649,
+    "read_only": false,
+    "read_only_alternatives": []
+}

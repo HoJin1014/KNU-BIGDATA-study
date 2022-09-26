@@ -1,0 +1,2 @@
+"0","# as.numeric(penguins$species)+1"
+"0","plot(penguins$bill_depth_mm, penguins$bill_length_mm, pch = 19, col = as.numeric(penguins$species)+1)"
