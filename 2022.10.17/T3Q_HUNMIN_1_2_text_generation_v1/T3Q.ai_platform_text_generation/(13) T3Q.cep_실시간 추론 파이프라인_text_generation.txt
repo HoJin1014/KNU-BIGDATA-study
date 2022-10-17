@@ -1,0 +1,83 @@
+1. 실시간 추론 파이프라인_text_generation
+
+T3Q.ai >> 실시간 추론 >> 파이프라인 등록
+
+1) 실시간 추론 템플릿
+Log to API(FileUpload)  	
+Image to API(FileUpload)
+Text file to API		선택
+텍스트 파일의 내용 그대로 입력에 이용할 때 사용한다.
+
+파이프라인 정보
+파이프라인 이름  	text_generation_inference
+파이프라인 설명
+
+다음
+
+2) Properties 설정
+Processor		Properties	Value
+DBCPConnectionPool	Password		postgres
+DBCPConnectionPool	Password		postgres
+
+다음
+
+3) Variable 설정
+Name						Value
+(1) Image_API_FileUpload_API_URL		/model/api/17b23/inference
+
+(2) Image_API_FileUpload_SourcePath		/AI_HUNMIN/text_generation/inference
+
+(3) Image_API_FileUpload_Topic		text_generation_topic
+
+
+저장 버튼 누르고
+
+2. 파이프라인 관리 >> 실시간 추론
+
+파이프라인(text_generation_inference) 우측 상단의 기능 버튼 클릭(시작)
+
+(1) T3Q.ai >> 서비스 메뉴 >> FileViewer
+
+Image_API_FileUpload_SourcePath: 기 설정한 업로드 경로(/AI_HUNMIN/text_generation/inference)에 
+
+로컬 폴더 
+
+inference_dataset
+
+폴더의
+
+test_1.txt
+test_2.txt
+test_3.txt
+
+파일 업로드
+
+추론 입력 데이터 파일 업로드
+
+(2) 데이터 적재 확인
+T3Q.ai >> 서비스 메뉴 >> PgAdmin
+
+#inference_origin
+inference_result
+
+테이블 조회
+
+#select * from inference_origin;
+
+select * from inference_result;
+
+데이터 저장 확인
+
+==========================
+SELECT * FROM public.inference_result
+where start_time like '%Mon, 13 Jun 2022%'
+order by start_time desc
+
+SELECT * FROM public.inference_result
+where url like '%/model/api/17b23/inference%'
+order by start_time desc
+
+
+
+
+ 

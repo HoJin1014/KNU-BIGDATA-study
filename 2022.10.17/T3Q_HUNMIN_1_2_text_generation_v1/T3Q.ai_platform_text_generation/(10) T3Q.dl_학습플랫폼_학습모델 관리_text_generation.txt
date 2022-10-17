@@ -1,0 +1,113 @@
+# T3Q.dl_학습플랫폼_학습모델 관리_text_generation
+
+학습플랫폼 >> 학습모델 관리
+
+1. [T3Q]AI 훈민정음 >> 학습플랫폼 >> 학습모델 관리
+
+번호	카테고리		알고리즘			학습명				등록자				실행정보					학습상태
+												수행시작일시	수행종료일시	결과(Accuracy)
+1	Transform	text_generation_train	text_generation_trainmodel		delkin		-		-		-			시작전
+
+선택하고
+
+2. [T3Q]AI 훈민정음 >> 학습플랫폼 >> 학습모델 관리
+
+학습모델 상세
+
+1) Step 1. 학습모델 기본정보
+모델명  		text_generation_trainmodel
+전처리 모델명  	text_generation_premodel		text_generation_premodel
+
+2) Step 2. 학습모델 알고리즘 정보
+문제유형  	Transform
+알고리즘  	text_generation_train
+평가방법 / 평가값  none	없음
+
+3) Step 3. 학습수행 관리정보
+
+시작전	learnexec-3883-2022-09-07	시작전
+
+(1) 공통 파라미터
+
+초기화방법 		Xavier uniform
+랜덤seed			777
+CPU			8 코어 
+Memory			16 Gi
+GPU			1 코어 
+
+(2) 학습상태
+학습상태  시작전   [ - ~ - ]
+
+Loss
+
+실행 버튼 누르고
+
+11분 [ 2022-09-07 19:22:03 ~ 2022-09-07 19:33:52 ]
+확인 후 
+
+(3) 학습로그
+2022-09-07 10:22:03,108 [ INFO] root: ### Train params ###
+2022-09-07 10:22:03,108 [ INFO] root: {'learn_id': 3297, 'learn_e_id': 3888, 'workspace_id': 't3qai', 'user_id': None, 'epoch': None, 'comm_method': 'db', 'log_path': '/data/aip/logs', 'cpu': '8', 'memory': '16Gi', 'gpu': '1', 'train_profiling': True, 'ds_idx': 1}
+2022-09-07 10:22:03,108 [ INFO] root: ### end ###
+2022-09-07 10:22:03,342 [ WARN] root: datasource_repo_id : 159, datasource_repo_obj : <DataSourceRepo 159>, repo_type : path
+2022-09-07 10:22:03,381 [ INFO] root: algo_path=/data/aip/logs/t3qai/mods/algo_616/1
+2022-09-07 10:22:04,580 [DEBUG] tensorflow: Falling back to TensorFlow client; we recommended you install the Cloud TPU client directly with pip install cloud-tpu-client.
+2022-09-07 10:22:05,317 [ INFO] root: [hunmin log] tensorflow ver : 2.4.1
+2022-09-07 10:22:05,354 [ INFO] root: [hunmin log] gpu set complete
+2022-09-07 10:22:05,354 [ INFO] root: [hunmin log] num of gpu: 1
+2022-09-07 10:22:05,355 [ INFO] root: [hunmin log] the start line of the function [exec_train]
+2022-09-07 10:22:05,355 [ INFO] root: [hunmin log] tm.train_data_path : /data/aip/dataset/t3qai/pm/pm_1051/ds_1060
+2022-09-07 10:22:05,355 [ INFO] root: [hunmin log] Files and directories in /data/aip/dataset/t3qai/pm/pm_1051/ds_1060 :
+2022-09-07 10:22:05,355 [ INFO] root: [hunmin log] dir_list : ['dataset']
+2022-09-07 10:22:05,355 [ INFO] root: [hunmin log] data load
+2022-09-07 10:22:05,355 [ INFO] root: [hunmin log] file path : /data/aip/dataset/t3qai/pm/pm_1051/ds_1060/dataset/shakespeare.txt
+2022-09-07 10:22:05,372 [ INFO] root: [hunmin log] loaded data check (text[:100]) : First Citizen:
+Before we proceed any further, hear me speak.
+
+All:
+Speak, speak.
+
+First Citizen:
+You
+2022-09-07 10:22:07,139 [DEBUG] tensorflow: Layer gru will use cuDNN kernel when run on GPU.
+2022-09-07 10:33:52,393 [ INFO] root: [hunmin log] model.summary() : 
+2022-09-07 10:33:52,393 [ INFO] root: Model: "my_model"
+2022-09-07 10:33:52,393 [ INFO] root: _________________________________________________________________
+2022-09-07 10:33:52,393 [ INFO] root: Layer (type)                 Output Shape              Param #   
+2022-09-07 10:33:52,393 [ INFO] root: =================================================================
+2022-09-07 10:33:52,393 [ INFO] root: embedding (Embedding)        multiple                  16896     
+2022-09-07 10:33:52,394 [ INFO] root: _________________________________________________________________
+2022-09-07 10:33:52,394 [ INFO] root: gru (GRU)                    multiple                  3938304   
+2022-09-07 10:33:52,394 [ INFO] root: _________________________________________________________________
+2022-09-07 10:33:52,394 [ INFO] root: dense (Dense)                multiple                  67650     
+2022-09-07 10:33:52,394 [ INFO] root: =================================================================
+2022-09-07 10:33:52,394 [ INFO] root: Total params: 4,022,850
+2022-09-07 10:33:52,394 [ INFO] root: Trainable params: 4,022,850
+2022-09-07 10:33:52,394 [ INFO] root: Non-trainable params: 0
+2022-09-07 10:33:52,394 [ INFO] root: _________________________________________________________________
+2022-09-07 10:33:52,906 [ INFO] root: [hunmin log] accuracy and loss curve plot for platform
+2022-09-07 10:33:52,907 [ INFO] root: [hunmin log] Files and directories in /data/aip/logs/t3qai/train/ln_3297/le_3888/1 :
+2022-09-07 10:33:52,907 [ INFO] root: [hunmin log] dir_list : ['logs', 'vocabulary.p', 'training_checkpoints']
+2022-09-07 10:33:52,907 [ INFO] root: [hunmin log]  the finish line of the function [exec_train]
+2022-09-07 10:33:52,908 [ INFO] root: [hunmin log] the end line of the function [train]
+
+
+
+
+2. 모델 배포 
+
+모델 배포 버튼 누르고
+
+아래의 팝업창이 뜨면
+
+학습모델 배포
+모델명을 입력하고 추론모델로 배포가 가능합니다.(50자이내)
+
+text_generation_trainmodel-2022-09-07
+
+배포 버튼 누름
+
+
+
+
+

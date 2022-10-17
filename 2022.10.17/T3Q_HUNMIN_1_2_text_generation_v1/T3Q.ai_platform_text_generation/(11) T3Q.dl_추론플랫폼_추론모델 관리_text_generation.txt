@@ -1,0 +1,82 @@
+# T3Q.dl_추론플랫폼_추론모델 관리_text_generation
+
+추론플랫폼 >> 추론모델관리
+
+1. [T3Q]AI 훈민정음 >> 추론플랫폼 >> 추론모델관리
+
+추론모델 관리
+
+번호		카테고리 > 알고리즘			모델명				서비스 타입	상태	배포자	배포일
+1	Transform > text_generation_train		text_generation_trainmodel-2022-09-07	일반		중지	delkin	2022-09-07 10:37:03
+
+Showing 1 to 1 of 1 entries
+
+선택하여 누르고
+
+
+2. [T3Q]AI 훈민정음 >> 추론플랫폼 >> 추론모델관리
+
+1) 추론모델 정보
+
+중지	text_generation_trainmodel-2022-09-07
+
+
+서비스 시작 버튼 누르고
+
+서비스 리소스 설정
+CPU 2 코어 
+GPU 0 코어 
+Memory 8 Gi
+확인 버튼 누름
+
+추론모델 서비스를 시작하시겠습니까?
+최대 5분 정도 소요될 수 있습니다.
+확인 버튼 누름
+
+추론모델 서비스가 기동되었습니다.
+OK 버튼 누름
+
+2) 추론모델 정보
+운영중	text_generation_trainmodel-2022-09-07
+배포일 : 2022-09-07 19:37:03
+
+(1) 리소스 현황 
+CPU	 	2
+GPU	 	0
+Memory 		8Gi
+
+(2) 전처리 정보 / 학습 정보
+
+전처리 정보	상세보기
+학습 정보		상세보기
+
+
+3) 추론모델 검증
+(1) 추론모델테스트
+요청		입력 예시: [['/data/aip/file_group/pm/pm_334/ds_441/image/1/1230.png']]
+
+요청		[['ROMEO:']]
+
+테스트 버튼 누름
+
+응답		"{\"inference\":\"ROMEO:\\nThey stay with me? and you are some of you.\\n\\nANGELO:\\nThe time hours shall understandly.\\nTendering H\"}\n"
+
+
+(2) 로그
+2022-09-07 10:38:44,963 [ WARN] root: @@@@@@@@@@@@@@ in df [['ROMEO:']]
+2022-09-07 10:38:44,974 [ INFO] root: [hunmin log] df :         0
+0  ROMEO:
+2022-09-07 10:38:44,974 [ INFO] root: [hunmin log] df.shape : (1, 1)
+2022-09-07 10:38:44,974 [ INFO] root: [hunmin log] type(df) : <class 'pandas.core.frame.DataFrame'>
+2022-09-07 10:38:44,974 [ INFO] root: [hunmin log] the end line of the function [transform]
+2022-09-07 10:38:44,974 [ INFO] root: [hunmin log] the start line of the function [exec_inference]
+2022-09-07 10:38:44,975 [ INFO] root: [hunmin log] data predict
+2022-09-07 10:38:45,930 [ INFO] root: [hunmin log] inference : ROMEO:
+They stay with me? and you are some of you.
+
+ANGELO:
+The time hours shall understandly.
+Tendering H
+2022-09-07 10:38:45,930 [ INFO] root: [hunmin log] result : {'inference': 'ROMEO:\nThey stay with me? and you are some of you.\n\nANGELO:\nThe time hours shall understandly.\nTendering H'}
+2022-09-07 10:38:45,930 [ INFO] root: [hunmin log] the end line of the function [inference]
+
