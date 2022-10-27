@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 img1=cv2.imread(r"C:\Users\USER\vscode\lg_project\rose.JPG")
 cv2.imshow('rose', img1)
@@ -60,4 +61,22 @@ print('img.shape = ', my_mat.shape) # 이미지의 모양
 # cv2.polylines(rgb_img, [points1], True, (255, 0, 0))
 
 # cv2.imshow('img', rge_img)
+# -------------------------------------------------------------------------------------------
+
+# Geometric transformation 기하학적 변환
+# 영상의 크기, 위치를 변화시키거나 회전시키는 등의 변환을 의미(스케일링, 회전, 뒤집기 가능)
+
+# Resize
+
+# affine transform 아핀 변환 - 평행을 유지하면서 이동, 회전, 크기 등을 변환할 수 있다.
+# 6개 식이 필요 - 매칭되는 3개의 쌍이 있으면 행렬을 구할 수 있다.
+# 중심점 기준으로 회전, wrapAffine 함수로 변환 행렬을 적용하여 affine 변환을 진행
+# rot_mat = cv2.getRotationMatrix2D((cX, cY), 45, 1.0)
+# rot_mat_0 = cv2.getRotationMatrix2D((0, 0), 45, 1.0)
+# lena_45 = cv2.wrapAffine(lena_img, rot_mat, (w, h))
+# lena_45_0 = cv2.wrapAffine(lena_img, rot_mat_0, (w, h))
+# cv2.imshow('lena_45', lena_45)
+# cv2.imshow('lena_45_0', lena_45_0)
+# cv2.waitKey(0)
+# cv2.destroAllwindows()
 
