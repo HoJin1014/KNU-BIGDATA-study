@@ -86,16 +86,74 @@ import numpy as np
 # ----------------------------------------------------------
 
 # find contour (많이 쓰는 함수)
-blob_img = cv2.imread('./findcontours.png')
-blob_gray = cv2.cvtColor(blob_img, cv2.COLOR_BGR2GRAY)
+# blob_img = cv2.imread('./findcontours.png')
+# blob_gray = cv2.cvtColor(blob_img, cv2.COLOR_BGR2GRAY)
 
-contour, hierarchy = cv2.findContours(blob_gray, cv2.RETR_TREE, \
-                                                cv2.CHAIN_APPROX_NONE)
-for i, cnt in enumerate(contour):
-    cv2.drawContours(blob_img, [cnt], 0, (0, 0, 255))
+# contour, hierarchy = cv2.findContours(blob_gray, cv2.RETR_TREE, \
+#                                                 cv2.CHAIN_APPROX_NONE)
+# for i, cnt in enumerate(contour):
+#     cv2.drawContours(blob_img, [cnt], 0, (0, 0, 255))
 
-cv2.imshow('blob_img', blob_img)
-cv2.imshow('blob_gray', blob_gray)
+# cv2.imshow('blob_img', blob_img)
+# cv2.imshow('blob_gray', blob_gray)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# ----------------------------------------------------------
+
+# convex hull
+# blob_img = cv2.imread('./blob.bmp')
+# blob_gray = cv2.cvtColor(blob_img, cv2.COLOR_BGR2GRAY)
+# _, blob_bin = cv2.threshold(blob_gray, -1, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+
+# contour, hierarchy = cv2.findContours(blob_bin, cv2.RETR_LIST, \
+#                                                 cv2.CHAIN_APPROX_NONE)
+
+# for i, cnt in enumerate(contour):
+#     hull = cv2.convexHull(cnt)
+#     cv2.drawContours(blob_img, [hull], 0, (0, 0, 255))
+
+# cv2.imshow('blob_img', blob_img)
+# cv2.imshow('blob_gray', blob_bin)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# ----------------------------------------------------------
+
+# moment
+# blob_img = cv2.imread('./blob.bmp')
+# blob_gray = cv2.cvtColor(blob_img, cv2.COLOR_BGR2GRAY)
+# _, blob_bin = cv2.threshold(blob_gray, -1, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+
+# contour, hierarchy = cv2.findContours(blob_bin, cv2.RETR_LIST, \
+#                                                 cv2.CHAIN_APPROX_NONE)
+
+# for i, cnt in enumerate(contour):
+#     M = cv2.moments(cnt)
+#     cX = int(M['m10'] / M['m00'])
+#     cY = int(M['m01'] / M['m00'])
+#     cv2.circle(blob_img, (cX, cY), 1, (0, 255, 0), -1)
+#     cv2.drawContours(blob_img, [cnt], 0, (0, 0, 255))
+
+# cv2.imshow('blob_img', blob_img)
+# cv2.imshow('blob_gray', blob_bin)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# ----------------------------------------------------------
+
+# Template matching
+alphabet_img = cv2.imread('./alphabet.bmp')
+A_img = cv2.imread('./A.bmp')
+alphabet_img = cv2.cvtColor(alphabet_img, cv2.COLOR_BGR2GRAY)
+A_img = cv2.cvtColor(A_img, cv2.COLOR_BGR2GRAY)
+
+TM_SQDIFF_ret = cv2.matchTemplate(alphabet_img, A_img, cv2.TM_SQDIFF)
+min_val_diff, max_val_diff, min_loc_diff, max_loc_diff = cv2.minMaxLoc(TM_SQDIFF_ret)
+h, w = A_img.shape
+cv2.rectangle(alphabet_img, (min_loc_diff[0], max_loc_diff[1]), (min_loc_diff[0]+w, min_loc_diff[1]+h), (128,128,128))
+print('min_loc_diff:', min_loc_diff)
+
+cv2.imshow('alphabet', alphabet_img)
+cv2.imshow('A_img', A_img)
+cv2.imshow('TM_SQDIFF_ret', TM_SQDIFF_ret/np.max(TM_SQDIFF_ret))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 # ----------------------------------------------------------
