@@ -1,0 +1,19 @@
+import cv2
+import numpy as np
+
+lena = cv2.imread('./lena.bmp')
+
+# average, gaussian, smooth
+lena_blur = cv2.blur(lena, (3,3))
+lena_gaussian = cv2.GaussianBlur(lena, (3,3), 1.5)
+smooth_filter = np.array([[1/16, 2/16, 1/16], \
+                          [2/16, 4/16, 2/16], \
+                          [1/16, 2/16, 1/16]])
+lena_smooth = cv2.filter2D(lena, -1, smooth_filter)
+
+cv2.imshow('lena', lena)
+cv2.imshow('lena_blur', lena_blur)
+cv2.imshow('lena_gaussian', lena_gaussian)
+cv2.imshow('lena_smooth', lena_smooth)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
