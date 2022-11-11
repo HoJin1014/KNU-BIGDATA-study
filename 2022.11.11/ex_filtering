@@ -33,18 +33,69 @@ import numpy as np
 # # ----------------------------------------------------------
 
 # Spatial filter III - Image segmentation
-aespa = cv2.imread('./aespa.jpg')
-aespa_gray = cv2.cvtColor(aespa, cv2.COLOR_BGR2GRAY)
-aespa_gray = cv2.resize(aespa_gray, (0, 0), fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC)
+# aespa = cv2.imread('./aespa.jpg')
+# aespa_gray = cv2.cvtColor(aespa, cv2.COLOR_BGR2GRAY)
+# aespa_gray = cv2.resize(aespa_gray, (0, 0), fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC)
 
-aespa_sobel_x = cv2.Sobel(aespa_gray, cv2.CV_32F, 1, 0)
-aespa_sobel_y = cv2.Sobel(aespa_gray, cv2.CV_32F, 0, 1)
-aespa_sobel = cv2.magnitude(aespa_sobel_x, aespa_sobel_y)
-aespa_sobel = np.clip(aespa_sobel, 0, 255).astype(np.uint8)
-cv2.imshow('aespa_gray', aespa_gray)
-cv2.imshow('aespa_sobel_x', aespa_sobel_x)
-cv2.imshow('aespa_sobel_y', aespa_sobel_y)
-cv2.imshow('aespa_sobel', aespa_sobel)
+# aespa_sobel_x = cv2.Sobel(aespa_gray, cv2.CV_32F, 1, 0)
+# aespa_sobel_y = cv2.Sobel(aespa_gray, cv2.CV_32F, 0, 1)
+# aespa_sobel = cv2.magnitude(aespa_sobel_x, aespa_sobel_y)
+# aespa_sobel_x = np.abs(aespa_sobel_x)                             #
+# aespa_sobel_x = np.clip(aespa_sobel_x, 0, 255).astype(np.uint8)
+# aespa_sobel_y = np.abs(aespa_sobel_y)
+# aespa_sobel_y = np.clip(aespa_sobel_y, 0, 255).astype(np.uint8)   #
+# aespa_sobel = np.clip(aespa_sobel, 0, 255).astype(np.uint8)
+# cv2.imshow('aespa_gray', aespa_gray)
+# cv2.imshow('aespa_sobel_x', aespa_sobel_x)
+# cv2.imshow('aespa_sobel_y', aespa_sobel_y)
+# cv2.imshow('aespa_sobel', aespa_sobel)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# ----------------------------------------------------------
+
+# Morphological operation - Example
+# bi_img = cv2.imread('./morphology.jpg')
+
+# erode_k = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+# erosion = cv2.erode(bi_img, erode_k)
+
+# dilate_k = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+# dilation = cv2.dilate(bi_img, dilate_k)
+
+# cv2.imshow('bi_img', bi_img)
+# cv2.imshow('erode', erosion)
+# cv2.imshow('dilate', dilation)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# ----------------------------------------------------------
+
+# Labeling - Example
+# blob_img = cv2.imread('./blob.bmp')
+# blob_gray = cv2.cvtColor(blob_img, cv2.COLOR_BGR2GRAY)
+# _, blob_bin = cv2.threshold(blob_gray, -1, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+
+# _, labels, stats, centroids = cv2.connectedComponentsWithStats(blob_bin)
+# for i, rec in enumerate(stats):
+#     x, y, w, h, area = rec
+#     cv2.rectangle(blob_img, (x, y, w, h), (0, 0, 255))
+
+# cv2.imshow('blob_bin', blob_bin)
+# cv2.imshow('blob_img', blob_img)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# ----------------------------------------------------------
+
+# find contour (많이 쓰는 함수)
+blob_img = cv2.imread('./findcontours.png')
+blob_gray = cv2.cvtColor(blob_img, cv2.COLOR_BGR2GRAY)
+
+contour, hierarchy = cv2.findContours(blob_gray, cv2.RETR_TREE, \
+                                                cv2.CHAIN_APPROX_NONE)
+for i, cnt in enumerate(contour):
+    cv2.drawContours(blob_img, [cnt], 0, (0, 0, 255))
+
+cv2.imshow('blob_img', blob_img)
+cv2.imshow('blob_gray', blob_gray)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 # ----------------------------------------------------------
