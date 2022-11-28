@@ -1,0 +1,1570 @@
+<의사결정나무 구조 살펴보기>
+중간 마디 추가하기
+뿌리 마디(Root Node) - 2를 기준으로 분리
+중간 마디(Internal Node) - 4를 기준으로 분리
+
+2개 이상의 feature 데이터의 경우
+뿌리 마디(Root Node) - X1이 A인지 B인지
+중간 마디(Internal Node) - X2의 값을 4 기준으로
+
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_iris(return_X_y = True)
+
+# DataFrame으로 변환
+df = pd.DataFrame(X, columns=['꽃받침 길이','꽃받침 넓이', '꽃잎 길이', '꽃잎 넓이'])
+df['클래스'] = Y
+
+X = df.drop(columns=['클래스'])
+Y = df['클래스']
+
+"""
+1. 학습용 평가용 데이터로 분리합니다
+"""
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+# 원본 데이터 출력
+print('원본 데이터 : \n',df.head(),'\n')
+
+# 전 처리한 데이터 5개만 출력합니다
+print('train_X : ')
+print(train_X[:5],'\n')
+print('train_Y : ')
+print(train_Y[:5],'\n')
+
+print('test_X : ')
+print(test_X[:5],'\n')
+print('test_Y : ')
+print(test_Y[:5])
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import pandas as pd
+from matplotlib import pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn import tree
+
+from elice_utils import EliceUtils
+elice_utils = EliceUtils()
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_iris(return_X_y = True)
+
+# DataFrame으로 변환
+df = pd.DataFrame(X, columns=['꽃받침 길이','꽃받침 넓이', '꽃잎 길이', '꽃잎 넓이'])
+df['클래스'] = Y
+
+X = df.drop(columns=['클래스'])
+Y = df['클래스']
+    
+# 학습용 평가용 데이터로 분리합니다
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+"""
+1. DTmodel에 의사결정나무 모델을 초기화 하고 학습합니다.
+"""
+DTmodel = DecisionTreeClassifier()
+DTmodel.fit(train_X, train_Y)
+
+
+# 학습한 결과를 출력합니다
+plt.rc('font', family='NanumBarunGothic')
+fig = plt.figure(figsize=(25,20))
+_ = tree.plot_tree(DTmodel, 
+                   feature_names=['꽃받침 길이','꽃받침 넓이', '꽃잎 길이', '꽃잎 넓이'],  
+                   class_names=['setosa', 'versicolor', 'virginica'],
+                   filled=True)
+
+fig.savefig("decision_tree.png")
+elice_utils.send_image("decision_tree.png")
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_iris(return_X_y = True)
+
+# DataFrame으로 변환
+df = pd.DataFrame(X, columns=['꽃받침 길이','꽃받침 넓이', '꽃잎 길이', '꽃잎 넓이'])
+df['클래스'] = Y
+
+X = df.drop(columns=['클래스'])
+Y = df['클래스']
+    
+# 학습용 평가용 데이터로 분리합니다
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+# DTmodel에 의사결정나무 모델을 초기화 하고 학습합니다
+DTmodel = DecisionTreeClassifier()
+DTmodel.fit(train_X, train_Y)
+
+
+"""
+1. test_X에 대해서 예측합니다.
+"""
+pred_X = DTmodel.predict(test_X)
+print('test_X에 대한 예측값 : \n{}'.format(pred_X))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import pandas as pd
+
+# 풍속을 threshold 값에 따라 분리하는 의사결정나무 모델 함수
+def binary_tree(data, threshold):
+    
+    yes = []
+    no = []
+    
+    # data로부터 풍속 값마다 비교를 하기 위한 반복문
+    for wind in data['풍속']:
+    
+        # threshold 값과 비교하여 분리합니다.
+        if wind > threshold:
+            yes.append(wind)
+        else:
+            no.append(wind)
+    
+    # 예측한 결과를 DataFrame 형태로 저장합니다.
+    data_yes = pd.DataFrame({'풍속': yes, '예상 지연 여부': ['Yes']*len(yes)})
+    data_no = pd.DataFrame({'풍속': no, '예상 지연 여부': ['No']*len(no)})
+    
+    return data_no.append(data_yes,ignore_index=True)
+
+# 풍속에 따른 항공 지연 여부 데이터
+Wind = [1, 1.5, 2.5, 5, 5.5, 6.5]
+Delay  = ['No', 'No', 'No', 'Yes', 'Yes', 'Yes']
+
+# 위 데이터를 DataFrame 형태로 저장합니다.
+data = pd.DataFrame({'풍속': Wind, '지연 여부': Delay})
+print(data,'\n')
+
+"""
+1. binary_tree 모델을 사용하여 항공 지연 여부를 예측합니다.
+"""
+data_pred = binary_tree(data, threshold = 1)
+print(data_pred,'\n')
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+<분류 평가 지표>
+- 혼동 행렬(Confusion Matrix) - 분류 모델의 성능을 평가하기 위함
+
+                                 예측
+실제 - Positive        TP           FN
+         Negative       FP           TN
+
+
+True Positive: 실제 Positive인 값을 Positive라고 예측(정답)
+True Negative: 실제 Negative인 값을 Negative라고 예측(정답)
+
+False Positive: 실제 Negative인 값을 Positive라고 예측(오답) - 1형 오류
+False Negative: 실제 Positive인 값을 Negative라고 예측(오답) - 2형 오류
+
+
+정확도(Accuracy)
+
+전체 데이터 중에서 제대로 분류된 데이터의 비율로
+모델이 얼마나 정확하게 분류하는지를 나타냄.
+일반적으로 분류 모델의 주요 평가 방법으로 사용됨.
+그러나, 클래스 비율이 불균형 할 경우 평가 지표의 신뢰성을 잃을 가능성이 있음.
+
+
+정밀도(Precision)
+
+모델이 Positive라고 분류한 데이터 중에서
+실제로 Positive인 데이터의 비율.
+Negative가 중요한 경우.
+즉, 실제로 Negative인 데이터를 Positive라고 판단하면 안되는 경우 사용되는 지표.
+
+-Negative가 중요한 경우-
+스팸 메일 판결을 위한 분류 문제
+해당 메일이 스팸일 경우 Positive, 스팸이 아닐 경우 즉, 일반 메일일 경우 Negative
+
+
+재현율(Recal, TPR)
+실제로 Positive인 데이터 중에서 모델이 Positive로 분류한 데이터의 비율
+
+-Positive가 중요한 경우-
+즉, 실제로 Positive인 데이터를 Negative라고 판단하면 안되는 경우 사용되는 지표
+ex)악성 종양 여부 판결을 위한 검사
+
+
+<다양한 분류 지표의 활동>
+분류 목적에 따라 다양한 지표를 계산하여 평가
+- 분류 결과를 전체적으로 보고싶다면 - 혼동행렬
+- 정답을 얼마나 잘 맞췄는지 - 정확도
+- FP 또는 FN의 중요도가 높다면 - 정밀도, 재현율
+
+
+import numpy as np
+import seaborn as sns
+from matplotlib import pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+
+from elice_utils import EliceUtils
+elice_utils = EliceUtils()
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_breast_cancer(return_X_y = True)
+X = np.array(X)
+Y = np.array(Y)
+
+# 데이터 정보를 출력합니다
+print('전체 샘플 개수: ',len(X))
+print('X의 feature 개수: ',len(X[0]))
+
+# 학습용 평가용 데이터로 분리합니다
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+# 분리된 평가용 데이터 정보를 출력합니다
+print('평가용 샘플 개수: ',len(test_Y))
+print('클래스 0인 평가용 샘플 개수: ',len(test_Y)-sum(test_Y))
+print('클래스 1인 평가용 샘플 개수: ',sum(test_Y),'\n')
+
+# DTmodel에 의사결정나무 모델을 초기화 하고 학습합니다
+DTmodel = DecisionTreeClassifier()
+DTmodel.fit(train_X, train_Y)
+
+# test_X을 바탕으로 예측한 값을 저장합니다
+y_pred = DTmodel.predict(test_X)
+
+"""
+1. 혼동 행렬을 계산합니다
+"""
+cm = confusion_matrix(test_Y, y_pred) # confusion_matrix() 를 활용하여 혼동행렬을 계산합니다.
+print('Confusion Matrix : \n {}'.format(cm))
+
+# 혼동 행렬을 출력합니다
+fig = plt.figure(figsize=(5,5))
+ax = sns.heatmap(cm, annot=True)
+ax.set(title='Confusion Matrix',
+            ylabel='True label',
+            xlabel='Predicted label')
+fig.savefig("decistion_tree.png")
+elice_utils.send_image("decistion_tree.png")
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_breast_cancer(return_X_y = True)
+X = np.array(X)
+Y = np.array(Y)
+
+# 학습용 평가용 데이터로 분리합니다
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+# 분리된 데이터 정보를 출력합니다
+print('학습용 샘플 개수: ',len(train_Y))
+print('클래스 0인 학습용 샘플 개수: ',len(train_Y)-sum(train_Y))
+print('클래스 1인 학습용 샘플 개수: ',sum(train_Y),'\n')
+
+print('평가용 샘플 개수: ',len(test_Y))
+print('클래스 0인 평가용 샘플 개수: ',len(test_Y)-sum(test_Y))
+print('클래스 1인 평가용 샘플 개수: ',sum(test_Y),'\n')
+
+# DTmodel에 의사결정나무 모델을 초기화 하고 학습합니다
+DTmodel = DecisionTreeClassifier()
+DTmodel.fit(train_X, train_Y)
+
+
+# 예측한 값을 저장합니다
+y_pred_train = DTmodel.predict(train_X)
+y_pred_test = DTmodel.predict(test_X)
+
+# 혼동 행렬을 계산합니다
+cm_train = confusion_matrix(train_Y, y_pred_train)
+cm_test = confusion_matrix(test_Y, y_pred_test)
+print('train_X Confusion Matrix : \n {}'.format(cm_train))
+print('test_X Confusion Matrix : \n {}'.format(cm_test))
+
+"""
+1. 정확도를 계산합니다.
+"""
+acc_train = DTmodel.score(train_X, train_Y) # score() 함수를 활용하여 정확도를 계산합니다.
+acc_test = DTmodel.score(test_X, test_Y)
+
+# 정확도를 출력합니다.
+print('train_X Accuracy: %f' % (acc_train))
+print('test_X Accuracy: %f' % (acc_test))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_breast_cancer(return_X_y = True)
+X = np.array(X)
+Y = np.array(Y)
+
+# 학습용 평가용 데이터로 분리합니다
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+# DTmodel에 의사결정나무 모델을 초기화 하고 학습합니다
+DTmodel = DecisionTreeClassifier()
+DTmodel.fit(train_X, train_Y)
+
+
+# 예측한 값을 저장합니다
+y_pred_train = DTmodel.predict(train_X)
+y_pred_test = DTmodel.predict(test_X)
+
+# 혼동 행렬을 계산합니다
+cm_train = confusion_matrix(train_Y, y_pred_train)
+cm_test = confusion_matrix(test_Y, y_pred_test)
+print('train_X Confusion Matrix : \n {}'.format(cm_train))
+print('test_X Confusion Matrix : \n {}'.format(cm_test),'\n')
+
+"""
+1. 정밀도를 계산합니다.
+"""
+precision_train = precision_score(train_Y, y_pred_train) # precision_score()를 활용하여 정밀도를 계산합니다.
+precision_test = precision_score(test_Y, y_pred_test)
+
+# 정밀도를 출력합니다.
+print('train_X Precision: %f' % (precision_train))
+print('test_X Precision: %f' % (precision_test),'\n')
+
+"""
+2. 재현율을 계산합니다.
+"""
+recall_train = recall_score(train_Y, y_pred_train) # recall_score()를 활용하여 재현율을 계산합니다.
+recall_test = recall_score(test_Y, y_pred_test)
+
+# 재현율을 출력합니다.
+print('train_X Recall: %f' % (recall_train))
+print('test_X Recall: %f' % (recall_test))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+딥러닝 개론
+딥러닝 시작하기
+1. 퍼셉트론
+
+딥러닝에 대한 전반적인 이해 - 퍼셉트론, CNN, RNN
+
+이미지 및 자연어 처리를 위한 딥러닝 모델 학습
+
+파이썬 기반 딥러닝 코딩 능력
+
+퍼셉트론
+인공 신경망으로 알려진 딥러닝의 개념을 이해하고 신경망의 가장 기본 단위인 퍼셉트론에 대해 학습.
+
+텐서플로우와 신경망
+가장 많이 사용되고 있는 딥러닝 프레임워크인 텐서플로우 사용법을 익히고 신경망을 구현하는 것을 학습.
+
+다양한 신경망
+이미지 및 자연어 처리에서 사용하는 CNN, RNN 모델에 대해 학습.
+
+<딥러닝 개론>
+인공지능, 머신러닝, 딥러닝의 관계
+인공지능>머신러닝>딥러닝
+
+딥러닝이란 - 머신러닝의 여러 방법론 중 하나, 인공신경망에 기반하여 컴퓨터에게 사람의 사고방식을 가르치는 방법.
+
+인공신경망이란 - 생물학의 신경망에서 영감을 얻은 학습 알고리즘, 사람의 신경 시스템을 모방함.
+
+딥러닝의 역사
+Perceptron(1958)
+First AI winter(1969)
+Boom times(1986)
+Second AI winter(1990)
+Deep learning revolution(2012)
+이미지넷, GPU 딥러닝 AlexNet(2012)
+
+현재의 다양한 딥러닝 기술 적용 사례
+얼굴 인식 카메라, 기계 번역 모델, 알파고 제로
+
+<퍼셉트론>
+신경망 이전의 연구
+얼굴인식, 숫자 및 문자 인식
+
+Perceptron(1958)
+N개의 신호 - 1개 - outputs (신경세포)
+
+퍼셉트론의 기본 구조
+x1, x2 - 입력 값
+w1, w2 - 가중치
+w0 - bias
+y - 출력 값
+y = activation(w0 + w1x1 + w2x2)
+
+Activation function - 활성화 함수
+activation(x) = 1 - x>=0 / 0 - x<0
+
+퍼셉트론 동작 예시 - y = activation(-0.5 + 2*1 + 1*0)
+
+퍼셉트론은 선형 분류기로써 데이터 분류 가능함.
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+# 학습 여부를 예측하는 퍼셉트론 함수
+def Perceptron(x_1,x_2):
+    
+    # 설정한 가중치값을 적용
+    w_0 = -5 
+    w_1 = -1
+    w_2 = 5
+    
+    # 활성화 함수에 들어갈 값을 계산
+    output = w_0+w_1*x_1+w_2*x_2
+    
+    # 활성화 함수 결과를 계산
+    if output < 0:
+        y = 0
+    else:
+        y = 1
+    
+    return y, output
+
+
+"""
+1. perceptron의 예측 결과가 학습한다:1 이 나오도록
+   x_1, x_2에 적절한 값을 입력하세요.
+"""
+x_1 = 0
+x_2 = 2
+
+result, go_out = Perceptron(x_1,x_2)
+
+print("신호의 총합 : %d" % go_out)
+
+if go_out > 0:
+    print("학습 여부 : %d\n ==> 학습한다!" % result)
+else:
+    print("학습 여부 : %d\n ==> 학습하지 않는다!" % result)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+'''
+1. 신호의 총합과 그에 따른 결과 0 또는 1을
+   반환하는 함수 perceptron을 완성합니다.
+   
+   Step01. 입력 받은 값을 이용하여
+           신호의 총합을 구합니다.
+           
+   Step02. 신호의 총합이 0 이상이면 1을, 
+           그렇지 않으면 0을 반환하는 활성화 
+           함수를 작성합니다.
+'''
+def perceptron(w, x):
+    
+    output = w[1] * x[0] + w[2] * x[1] + w[3] * x[2] + w[4] *x[3] + w[0]
+    
+    if output >= 0:
+        y = 1
+    else:
+        y = 0
+    
+    return y, output
+
+# x_1, x_2, x_3, x_4의 값을 순서대로 list 형태로 저장
+x = [1,2,3,4]
+
+# w_0, w_1, w_2, w_3, w_4의 값을 순서대로 list 형태로 저장
+w = [2, -1, 1, 3, -2]
+
+# 퍼셉트론의 결과를 출력
+y, output = perceptron(w,x)
+
+print('output: ', output)
+print('y: ', y)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+def perceptron(w, x):
+    
+    output = w[1] * x[0] + w[2] * x[1] + w[0]
+    
+    if output >= 0:
+        y = 1
+    else:
+        y = 0
+    
+    return y
+
+# Input 데이터
+X = [[0,0], [0,1], [1,0], [1,1]]
+
+'''
+1. perceptron 함수의 입력으로 들어갈 가중치 값을 입력해주세요.
+   순서대로 w_0, w_1, w_2에 해당됩니다.
+'''
+w = [-5, 1, 5]
+
+# AND Gate를 만족하는지 출력하여 확인
+print('perceptron 출력')
+
+for x in X:
+    print('Input: ',x[0], x[1], ', Output: ',perceptron(w, x))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+<다층 퍼셉트론> (Multi Layer Perceptron)
+
+비 선형적인 문제 해결 - 단층 퍼셉트론은 입력층과 출력층만 존재
+                                  단층 퍼셉트론을 여러 개 쌓은 것을 부름
+
+히든층(Hidden Layer) - 입력층과 출력층 사이의 모든 Layer
+히든층이 많아진다면, 깊은 신경망이라는 의미의 Deep Learning 단어 사용
+장점: 분류할 수 있는 방법이 많아짐
+단점: 가중치 - W0, W1, W2, Wn
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+텐서플로우와 신경망
+
+딥러닝 모델이란 - 히든층이 많아진다면, 깊은 신경망이라는 의미의 Deep Learning 단어 사용
+
+동그라미 - Node/Unit - 각층을 구성하는 요소 / Layer - 모델을 구성하는 층 / 가중치(Weight)- 노드간의 연결강도
+숫자가 크면 연결강도 크고 숫자가 작으면 연결강도 작다.
+
+-딥러닝 모델의 학습 방법-
+예측값과 실제값 간의 오차값을 최소화하기 위해 오차값을 최소화하는 모델의 인자를 찾는 알고리즘 적용
+Loss function을 최소화하는 가중치를 찾기 위해 최적화 알고리즘을 적용
+
+-딥러닝 모델이 예측값 구하는 방식-
+순전파(Forward propagation) - 입력 값을 바탕으로 출력 값을 계산하는 과정
+
+-최적화 방식 살펴보기-
+순전파를 사용하면 예측값과 실제값 간의 오차값을 구하여
+Loss function을 구할 수 있음
+그렇다면 어떻게 최적화를 해야할까? - 경사 하강법(Gradient descent)을 사용
+
+-경사 하강법 (Gradient descent)-
+가중치를 Loss function 값이 작아지게 업데이트 하는 방법
+가중치는 Gradient 값을 사용하여 업데이트를 수행함
+Gradient 값은 각 가중치 마다 정해지며,
+역전파(Backpropogation)를 통하여 구할 수 있음
+
+-역전파(Backpropogation)
+Forward propagation의 반대 방향으로 이루어지는 과정
+
+-딥러닝 모델의 학습 방법 정리-
+딥러닝 모델의 학습 순서
+1. 학습용 feature 데이터를 입력하여 예측값 구하기(순전파)
+2. 예측값과 실제값 사이의 오차 구하기(Loss 계산)
+3. Loss를 줄일 수 있는 가중치 업데이트 하기(역전파)
+4. 1~3번 반복으로 Loss를 최소로 하는 가중치 얻기
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+텐서플로우(TensorFlow)
+유연하고, 효율적이며, 확장성 있는 딥러닝 프레임워크
+대형 클러스트 컴퓨터부터 스마트폰까지 다양한 디바이스에서 동작 가능
+
+딥러닝 모델 구현 순서
+1. 데이터 전 처리 2. 딥러닝 모델 구축 3. 모델 학습 4. 평가 및 예측하기
+
+-데이터 전 처리하기-
+Tensorflow 딥러닝 모델은 Tensor 형태의 데이터를 입력 받는다
+Tensor란 다차원 배열로서 tensorflow에서 사용하는 객체
+
+# pandas를 사용하여 데이터 불러오기
+df = pd.read_csv('data.csv')
+feature = df.drop(columns=['label])
+label = df['label']
+
+# tensor 형태로 데이터 변환
+dataset = tf.data.Dataset_from_tensor_slices((feature.values, labels.values))
+
+-Epoch 와 Batch-
+딥러닝에 사용하는 데이터는 추가적인 전 처리 작업이 필요함 => Epoch, Batch
+Epoch: 한 번의 epoch는 전체 데이터 셋에 대해 한 번 학습을 완료한 상태
+Batch: 나눠진 데이터 셋 (보통 mini-batch라고 표현)
+iteration는 epoch를 나누어서 실행하는 횟수를 의미
+
+EX) 총 데이터가 1000개, Batch size = 100
+1 iteration = 100개 데이터에 대해 학습
+1 epoch = 100/Batch size = 10 iteration
+
+# tensor 형태로 데이터 변환
+dataset = tf.data.Dataset_from_tensor_slices((feature.values, labels.values))
+
+# dataset의 batch 사이즈를 32로 설정
+dataset = dataset.batch(32)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import tensorflow as tf
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+np.random.seed(100)
+tf.random.set_seed(100)
+
+# 데이터를 DataFrame 형태로 불러 옵니다.
+df = pd.read_csv("data/Advertising.csv")
+
+# DataFrame 데이터 샘플 5개를 출력합니다.
+print('원본 데이터 샘플 :')
+print(df.head(),'\n')
+
+# 의미없는 변수는 삭제합니다.
+df = df.drop(columns=['Unnamed: 0'])
+
+"""
+1. Sales 변수는 label 데이터로 Y에 저장하고 나머진 X에 저장합니다.
+"""
+X = df.drop(columns=['Sales'])
+Y = df['Sales']
+
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.3)
+
+"""
+2. 학습용 데이터를 tf.data.Dataset 형태로 변환합니다.
+   from_tensor_slices 함수를 사용하여 변환하고 batch를 수행하게 합니다.
+"""
+train_ds = tf.data.Dataset.from_tensor_slices((train_X.values, train_Y))
+train_ds = train_ds.shuffle(len(train_X)).batch(batch_size=5)
+
+# 하나의 batch를 뽑아서 feature와 label로 분리합니다.
+[(train_features_batch, label_batch)] = train_ds.take(1)
+
+# batch 데이터를 출력합니다.
+print('\nFB, TV, Newspaper batch 데이터:\n',train_features_batch)
+print('Sales batch 데이터:',label_batch)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+텐서플로우로 딥러닝 구현하기
+- 모델 구현
+딥러닝 모델 구축하기: 고수준 API 활용
+Keras - 텐서플로우의 패키지로 제공되는 고수준 API, 딥러닝 모델을 간단하고 빠르게 구현
+
+모델 클래스 객체 생성 - tf.keras.models.Sequential()
+
+모델의 각 Layer 구성 - tf.keras.layers.Dense(units, activation)
+units: 레이어 안의 Node의 수 / activation: 적용할 activation 함수 설정
+
+Input Layer의 입력 형태 지정하기 - 입력 형태에 대한 정보를 필요로 함
+input_shape / input_dim 인자 설정하기
+
+모델 구축하기 코드 예시 (1)
+model = tf.keras.models.Sequential([
+	tf.keras.layers.Dense(10, input_dim=2, activation='sigmoid'), # 2개의 입력 변수, 10개의 노드
+	tf.keras.layers.Dense(10, activation='sigmoid'), # 10개의 노드
+	tf.keras.layers.Dense(1, activation='sigmoid'), # 1개의 노드
+])
+
+
+모델에 Layer 추가하기
+[model].add(tf.keras.layers.Dense(units, activation))
+units: 레이어 안의 Node의 수 / activation: 적용할 activation 함수 설정
+
+
+모델 구축하기 코드 예시 (2)
+model = tf.keras.models.Sequential()
+
+model.add(tf.keras.layers.Dense(10, input_dim=2, activation='sigmoid')) # 2개의 입력 변수, 10개의 노드
+model.add(tf.keras.layers.Dense(10, activation='sigmoid')) # 10개의 노드
+model.add(tf.keras.layers.Dense(1, activation='sigmoid')) # 1개의 노드
+
+
+모델 학습 방식을 설정하기 위한 함수
+[model].compile(optimizer, loss)
+optimizer: 모델 학습 최적화 방법
+loss: 손실 함수 설정
+
+모델을 학습시키기 위한 함수
+[model].fit(x,y)
+x: 학습 데이터
+y: 학습 데이터의 label
+
+# MSE를 loss로 설정, 최적화 방식은 SGD 사용
+model.compile(loss='mean_squared_error', optimizer='SGD')
+
+# dataset에 저장된 데이터를 입력하고, epochs를 100으로 설정하고 학습
+model.fit(dataset, epochs=100)
+
+- 평가 및 예측하기 -
+
+모델을 평가하기 위한 메소드
+[model].evaluate(x,y)
+x: 테스트 데이터
+y: 테스트 데이터의 label
+
+모델로 예측을 수행하기 위한 함수
+[model].predict(x)
+x: 예측하고자 하는 데이터
+
+# MSE를 loss로 설정, 최적화 방식은 SGD 사용
+model.compile(loss='mean_squared_error', optimizer='SGD')
+
+# dataset에 저장된 데이터를 입력하고, epochs를 100으로 설정하고 학습
+model.fit(dataset, epochs=100)
+
+# 모델 평가 및 예측하기
+model.evaluate(X_test, Y_test)
+predicted_labels_test = model.predict(X_test)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+텐서플로우를 활용하여 신경망 구현하기 - 모델 구현
+import tensorflow as tf
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+np.random.seed(100)
+tf.random.set_seed(100)
+
+# 데이터를 DataFrame 형태로 불러 옵니다.
+df = pd.read_csv("data/Advertising.csv")
+
+# DataFrame 데이터 샘플 5개를 출력합니다.
+print('원본 데이터 샘플 :')
+print(df.head(),'\n')
+
+# 의미없는 변수는 삭제합니다.
+df = df.drop(columns=['Unnamed: 0'])
+
+X = df.drop(columns=['Sales'])
+Y = df['Sales']
+
+# 학습용 테스트용 데이터로 분리합니다.
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.3)
+
+# Dataset 형태로 변환합니다.
+train_ds = tf.data.Dataset.from_tensor_slices((train_X.values, train_Y))
+train_ds = train_ds.shuffle(len(train_X)).batch(batch_size=5)
+
+"""
+1. tf.keras.models.Sequential()를 활용하여 신경망 모델을 생성합니다.
+   자유롭게 layers를 쌓고 마지막 layers는 노드 수를 1개로 설정합니다.
+"""
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Dense(10, input_shape=(3,)),
+    tf.keras.layers.Dense(1)
+    ])
+
+print(model.summary())
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import tensorflow as tf
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+np.random.seed(100)
+tf.random.set_seed(100)
+
+# 데이터를 DataFrame 형태로 불러 옵니다.
+df = pd.read_csv("data/Advertising.csv")
+
+# DataFrame 데이터 샘플 5개를 출력합니다.
+print('원본 데이터 샘플 :')
+print(df.head(),'\n')
+
+# 의미없는 변수는 삭제합니다.
+df = df.drop(columns=['Unnamed: 0'])
+
+X = df.drop(columns=['Sales'])
+Y = df['Sales']
+
+# 학습용 테스트용 데이터로 분리합니다.
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.3)
+
+# Dataset 형태로 변환합니다.
+train_ds = tf.data.Dataset.from_tensor_slices((train_X.values, train_Y))
+train_ds = train_ds.shuffle(len(train_X)).batch(batch_size=5)
+
+
+# keras를 활용하여 신경망 모델을 생성합니다.
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Dense(10, input_shape=(3,)),
+    tf.keras.layers.Dense(1)
+    ])
+
+
+"""
+1. 학습용 데이터를 바탕으로 모델의 학습을 수행합니다.
+    
+step1. compile 메서드를 사용하여 최적화 모델 설정합니다.
+       loss는 mean_squared_error, optimizer는 adam으로 설정합니다.
+       
+step2. fit 메서드를 사용하여 Dataset으로 변환된 학습용 데이터를 학습합니다.
+       epochs는 100으로 설정합니다.
+"""
+model.compile(loss='mean_squared_error', optimizer='adam')
+history = model.fit(train_ds, epochs=100, verbose=2)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+텐서플로우를 활용하여 신경망 구현하기 - 모델 평가 및 예측
+import tensorflow as tf
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+np.random.seed(100)
+tf.random.set_seed(100)
+
+# 데이터를 DataFrame 형태로 불러 옵니다.
+df = pd.read_csv("data/Advertising.csv")
+
+# DataFrame 데이터 샘플 5개를 출력합니다.
+print('원본 데이터 샘플 :')
+print(df.head(),'\n')
+
+# 의미없는 변수는 삭제합니다.
+df = df.drop(columns=['Unnamed: 0'])
+
+X = df.drop(columns=['Sales'])
+Y = df['Sales']
+
+# 학습용 테스트용 데이터로 분리합니다.
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.3)
+
+# Dataset 형태로 변환합니다.
+train_ds = tf.data.Dataset.from_tensor_slices((train_X.values, train_Y))
+train_ds = train_ds.shuffle(len(train_X)).batch(batch_size=5)
+
+# keras를 활용하여 신경망 모델을 생성합니다.
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Dense(10, input_shape=(3,)),
+    tf.keras.layers.Dense(1)
+    ])
+
+# 학습용 데이터를 바탕으로 모델의 학습을 수행합니다.
+model.compile(loss='mean_squared_error', optimizer='adam')
+history = model.fit(train_ds, epochs=100, verbose=2)
+
+"""
+1. evaluate 메서드를 사용하여 테스트용 데이터의 loss 값을 계산합니다.
+"""
+loss = model.evaluate(test_X, test_Y, verbose=0)
+
+"""
+2. predict 메서드를 사용하여 테스트용 데이터의 예측값을 계산합니다.
+"""
+predictions = model.predict(test_X)
+
+# 결과를 출력합니다.
+print("테스트 데이터의 Loss 값: ", loss)
+for i in range(5):
+    print("%d 번째 테스트 데이터의 실제값: %f" % (i, test_Y.iloc[i]))
+    print("%d 번째 테스트 데이터의 예측값: %f" % (i, predictions[i][0]))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+신경망 모델로 분류하기
+import tensorflow as tf
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+np.random.seed(100)
+tf.random.set_seed(100)
+
+# sklearn에 저장된 데이터를 불러 옵니다.
+X, Y = load_iris(return_X_y = True)
+
+# DataFrame으로 변환
+df = pd.DataFrame(X, columns=['꽃받침 길이','꽃받침 넓이', '꽃잎 길이', '꽃잎 넓이'])
+df['클래스'] = Y
+
+X = df.drop(columns=['클래스'])
+Y = df['클래스']
+
+# 학습용 평가용 데이터로 분리합니다
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state = 42)
+
+# Dataset 형태로 변환합니다.
+train_ds = tf.data.Dataset.from_tensor_slices((train_X.values, train_Y))
+train_ds = train_ds.shuffle(len(train_X)).batch(batch_size=5)
+
+"""
+1. keras를 활용하여 신경망 모델을 생성합니다.
+   3가지 범주를 갖는 label 데이터를 분류하기 위해서 마지막 레이어 노드를 아래와 같이 설정합니다.
+"""
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Dense(10, input_dim=4),
+    tf.keras.layers.Dense(3, activation='softmax')
+    ])
+
+# 학습용 데이터를 바탕으로 모델의 학습을 수행합니다.
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+history = model.fit(train_ds, epochs=100, verbose=2)
+
+# 테스트용 데이터를 바탕으로 학습된 모델을 평가합니다.
+loss, acc = model.evaluate(test_X, test_Y)
+
+# 테스트용 데이터의 예측값을 구합니다.
+predictions = model.predict(test_X)
+
+# 결과를 출력합니다.
+print("테스트 데이터의 Accuracy 값: ", acc)
+for i in range(5):
+    print("%d 번째 테스트 데이터의 실제값: %d" % (i, test_Y.iloc[i]))
+    print("%d 번째 테스트 데이터의 예측값: %d" % (i, np.argmax(predictions[i])))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+-다양한 신경망-
+이미지 처리를 위한 데이터 전 처리
+
+우리 주변의 이미지 처리 기술 예시
+얼굴 인식 카메라, 화질 개선(Super Resolution), 이미지 자동 태깅
+
+고양이 - 다음과 같이 고양이가 있다고 할 때 어떤 동물인지 분류하고자 한다면?
+
+컴퓨터에게 이미지는 각 픽셀 값을 가진 숫자 배열로 인식
+
+모두 같은 크기를 갖는 이미지로 통일
+1) 가로 세로 픽셀 사이즈를 표현하는 해상도 통일
+2) 색을 표현하는 방식 통일 (RGB, HSV, Gray-scale, Binary, ...)
+MNIST 데이터 <- 색 표현 변환 <- 해상도 변환 <- 원본 이미지
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from elice_utils import EliceUtils
+
+elice_utils = EliceUtils()
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+
+# MNIST 데이터 세트를 불러옵니다.
+mnist = tf.keras.datasets.mnist
+
+# MNIST 데이터 세트를 Train set과 Test set으로 나누어 줍니다.
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()    
+
+# Train 데이터 5000개와 Test 데이터 1000개를 사용합니다.
+train_images, train_labels = train_images[:5000], train_labels[:5000]
+test_images, test_labels = test_images[:1000], test_labels[:1000]
+
+
+print("원본 학습용 이미지 데이터 형태: ",train_images.shape)
+print("원본 평가용 이미지 데이터 형태: ",test_images.shape)
+print("원본 학습용 label 데이터: ",train_labels)
+
+# 첫 번째 샘플 데이터를 출력합니다.
+plt.figure(figsize=(10, 10))
+plt.imshow(train_images[0], cmap=plt.cm.binary)
+plt.colorbar()
+plt.title("Training Data Sample")
+plt.savefig("sample1.png")
+elice_utils.send_image("sample1.png")
+
+# 9개의 학습용 샘플 데이터를 출력합니다.
+class_names = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+for i in range(9):
+    plt.subplot(3,3,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    plt.imshow(train_images[i], cmap=plt.cm.binary)
+    plt.xlabel(class_names[train_labels[i]])
+plt.savefig("sample2.png")
+elice_utils.send_image("sample2.png")
+
+"""
+1. CNN 모델의 입력으로 사용할 수 있도록 (샘플개수, 가로픽셀, 세로픽셀, 1) 형태로 변환합니다.
+"""
+train_images = tf.expand_dims(train_images, -1)
+test_images = tf.expand_dims(test_images, -1)
+
+print("변환한 학습용 이미지 데이터 형태: ",train_images.shape)
+print("변환한 평가용 이미지 데이터 형태: ",test_images.shape)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+이미지 처리를 위한 딥러닝 모델
+기존 다층 퍼셉트론 기반 신경망의 이미지 처리 방식 - 극도로 많은 수의 파라미터가 필요
+
+합성곱 신경망(Convolution Neural Network)
+귀 + 코 + 수염 + 꼬리
+작은 필터를 순환시키는 방식, 이미지의 패턴이 아닌 특징을 중점으로 인식
+
+합성곱 신경망의 구조 - 입력 이미지의 특징을 추출, 분류하는 과정으로 동작
+Convolution Layer -> Pooling Layer -> Fully-Connected Layer
+
+이미지에서 어떠한 특징이 있는 지를 구하는 과정, 필터가 이미지를 이동하여 새로운 이미지 (피쳐맵)를 생성
+입력 이미지 X 필터(커널) = 피쳐맵
+
+피쳐맵의 크기 변형 : Padding, Striding
+Padding - 원본 이미지의 상하좌우에 한 줄씩 추가
+Striding - 필터를 이동시키는 거리(Stride) 설정
+
+Pooling Layer - Max Pooling / Average Pooling - 이미지의 왜곡의 영향(노이즈)를 축소하는 과정
+
+Fully Connected Layer - 추출된 특징을 사용하여 이미지를 분류
+
+CNN
+키 필터
+입 필터
+
+분류를 위한 Softmax 활성화 함수
+마지막 계층에 Softmax 활성화 함수 사용
+a+b+c+d+e+f = 1,a,b,c,d,e,f>=0
+ex) 강아지, 고양이, 토끼 등 다양한 값
+
+합성곱(특징 추출) -> 풀링(사이즈 및 노이즈) -> 활성함수(Fully Connected 분류)
+Convolution Layer 는 특징을 찾아내고,
+Pooling Layer 는 처리할 맵(이미지) 크기를 줄여준다. 이를 N번 반복한다.
+반복할 때마다 줄어든 영역에서의 특징을 찾게 되고, 영역의 크기는 작아졌기 때문에 빠른 학습이 가능해진다.
+
+합성곱 신경망 기반 다양한 이미지 처리 기술
+Object detection & segmentation (대표적) - 핸드백, 버틀, 와인 글래스
+Super resolution (SR) - 해상도가 낮은 이미지를 해상도를 높일 수 있다.
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+MNIST 분류 CNN 모델 - 모델 구현
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from visual import *
+from elice_utils import EliceUtils
+
+elice_utils = EliceUtils()
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+
+# MNIST 데이터 세트를 불러옵니다.
+mnist = tf.keras.datasets.mnist
+
+# MNIST 데이터 세트를 Train set과 Test set으로 나누어 줍니다.
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()    
+
+# Train 데이터 5000개와 Test 데이터 1000개를 사용합니다.
+train_images, train_labels = train_images[:5000], train_labels[:5000]
+test_images, test_labels = test_images[:1000], test_labels[:1000]
+
+# CNN 모델의 입력으로 사용할 수 있도록 (샘플개수, 가로픽셀, 세로픽셀, 1) 형태로 변환합니다.
+train_images = tf.expand_dims(train_images, -1)
+test_images = tf.expand_dims(test_images, -1)
+
+
+"""
+1. CNN 모델을 설정합니다.
+   분류 모델에 맞게 마지막 레이어의 노드 수는 10개, activation 함수는 'softmax'로 설정합니다.
+"""
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME', input_shape = (28,28,1)),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME'),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME'),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(64, activation = 'relu'),
+    tf.keras.layers.Dense(10, activation = 'softmax')
+])
+
+# CNN 모델 구조를 출력합니다.
+print(model.summary())
+
+# CNN 모델의 학습 방법을 설정합니다.
+model.compile(loss = 'sparse_categorical_crossentropy',
+              optimizer = 'adam',
+              metrics = ['accuracy'])
+              
+# 학습을 수행합니다. 
+history = model.fit(train_images, train_labels, epochs = 20, batch_size = 512)
+
+# 학습 결과를 출력합니다.
+Visulaize([('CNN', history)], 'loss')
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+MNIST 분류 CNN 모델 - 평가 및 예측
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from visual import *
+from plotter import *
+from elice_utils import EliceUtils
+
+elice_utils = EliceUtils()
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+
+# MNIST 데이터 세트를 불러옵니다.
+mnist = tf.keras.datasets.mnist
+
+# MNIST 데이터 세트를 Train set과 Test set으로 나누어 줍니다.
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()    
+
+# Train 데이터 5000개와 Test 데이터 1000개를 사용합니다.
+train_images, train_labels = train_images[:5000], train_labels[:5000]
+test_images, test_labels = test_images[:1000], test_labels[:1000]
+
+# CNN 모델의 입력으로 사용할 수 있도록 (샘플개수, 가로픽셀, 세로픽셀, 1) 형태로 변환합니다.
+train_images = tf.expand_dims(train_images, -1)
+test_images = tf.expand_dims(test_images, -1)
+
+
+# CNN 모델을 설정합니다.
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME', input_shape = (28,28,1)),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME'),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME'),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(64, activation = 'relu'),
+    tf.keras.layers.Dense(10, activation = 'softmax')
+])
+
+# CNN 모델 구조를 출력합니다.
+print(model.summary())
+
+# CNN 모델의 학습 방법을 설정합니다.
+model.compile(loss = 'sparse_categorical_crossentropy',
+              optimizer = 'adam',
+              metrics = ['accuracy'])
+              
+# 학습을 수행합니다. 
+history = model.fit(train_images, train_labels, epochs = 10, batch_size = 128, verbose = 2)
+
+Visulaize([('CNN', history)], 'loss')
+
+"""
+1. 평가용 데이터를 활용하여 모델을 평가합니다.
+   loss와 accuracy를 계산하고 loss, test_acc에 저장합니다.
+"""
+loss, test_acc = model.evaluate(test_images, test_labels, verbose = 2)
+
+"""
+2. 평가용 데이터에 대한 예측 결과를 predictions에 저장합니다.
+"""
+predictions = model.predict_classes(test_images)
+
+# 모델 평가 및 예측 결과를 출력합니다.
+print('\nTest Loss : {:.4f} | Test Accuracy : {}'.format(loss, test_acc))
+print('예측한 Test Data 클래스 : ',predictions[:10])
+
+# 평가용 데이터에 대한 레이어 결과를 시각화합니다.
+Plotter(test_images, model)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+MNIST 분류 - MLP vs. CNN
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+# MNIST 데이터 세트를 불러옵니다.
+mnist = tf.keras.datasets.mnist
+
+# MNIST 데이터 세트를 Train set과 Test set으로 나누어 줍니다.
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()    
+
+# Train 데이터 5000개와 Test 데이터 500개를 사용합니다.
+train_images, train_labels = train_images[:5000].astype(float), train_labels[:5000]
+test_images, test_labels = test_images[:500].astype(float), test_labels[:500]
+
+'''
+1. 먼저 MLP 모델을 학습해보겠습니다.
+'''
+print('========== MLP ==========')
+
+# MLP 모델의 입력으로 사용할 수 있도록 (샘플개수, 가로픽셀 * 세로픽셀) 형태로 변환합니다.
+train_images = tf.cast(tf.reshape(train_images, (5000, -1)) / 256., tf.float32)
+train_labels = tf.convert_to_tensor(train_labels)
+test_images = tf.cast(tf.reshape(test_images, (500, -1)) / 256., tf.float32)
+test_labels = tf.convert_to_tensor(test_labels)
+
+# MLP 모델을 설정합니다.
+MLP_model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation = 'relu'),
+    tf.keras.layers.Dense(32, activation = 'relu'),
+    tf.keras.layers.Dense(10, activation = 'softmax')
+])
+
+# MLP 모델의 학습 방법을 설정합니다.
+MLP_model.compile(loss = 'sparse_categorical_crossentropy',
+              optimizer = 'adam',
+              metrics = ['accuracy'])
+              
+# 학습을 수행합니다. 
+history = MLP_model.fit(train_images, train_labels, epochs = 10, batch_size = 128, verbose = 2)
+
+# MLP 모델 구조를 출력합니다. weight의 수가 52,650개입니다.
+MLP_model.summary()
+
+# 평가용 데이터를 활용하여 정확도를 평가합니다.
+loss, test_acc = MLP_model.evaluate(test_images, test_labels, verbose = 0)
+
+# 모델 평가 및 예측 결과를 출력합니다.
+print('\nMLP Test Loss : {:.4f} | MLP Test Accuracy : {}\n'.format(loss, test_acc))
+
+'''
+2. 다음으로, CNN 모델을 학습해보겠습니다.
+'''
+print('========== CNN ==========')
+
+# CNN 모델의 입력으로 사용할 수 있도록 (샘플개수, 가로픽셀, 세로픽셀, 1) 형태로 변환합니다.
+train_images = tf.reshape(train_images, (5000, 28, 28, 1))
+test_images = tf.reshape(test_images, (500, 28, 28, 1))
+
+# CNN 모델을 설정합니다.
+CNN_model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME', input_shape = (28,28,1)),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME'),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'SAME'),
+    tf.keras.layers.MaxPool2D(padding = 'SAME'),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(64, activation = 'relu'),
+    tf.keras.layers.Dense(10, activation = 'softmax')
+])
+
+# CNN 모델의 학습 방법을 설정합니다.
+CNN_model.compile(loss = 'sparse_categorical_crossentropy',
+              optimizer = 'adam',
+              metrics = ['accuracy'])
+
+# 학습을 수행합니다. 
+history = CNN_model.fit(train_images, train_labels, epochs = 10, batch_size = 128, verbose = 2)
+
+# CNN 모델 구조를 출력합니다. weight의 수가 52,298개입니다.
+CNN_model.summary()
+
+# 평가용 데이터를 활용하여 정확도를 평가합니다.
+loss, test_acc = CNN_model.evaluate(test_images, test_labels, verbose = 0)
+
+# 모델 평가 및 예측 결과를 출력합니다.
+print('\nCNN Test Loss : {:.4f} | CNN Test Accuracy : {}'.format(loss, test_acc))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+자연어 처리를 위한 데이터 전 처리
+
+우리 주변의 자연어 처리 예시 - 기계 번역 모델, 음성 인식
+1. 자연어 전 처리(Preprocessing)
+2. 단어 표현 (Word Embedding)
+3. 모델 적용하기 (Modeling)
+
+-자연어 전 처리 방법-
+원 상태 그대로의 자연어는 전처리 과정이 필요함
+Noise canceling
+Tokenizing
+StopWord removal
+
+-오류 교정(Noise canceling)-
+"안녕하 세요. 반갑 스니다." => "안녕하세요. 반갑습니다."
+자연어 문장의 스펠링 체크 및 띄어쓰기 오류 교정
+
+-토큰화(Tokenizing)-
+"딥러닝 기초 과목을 수강하고 있습니다." - 수치 변환
+=> ['딥', '러닝', '기초', '과목', '을', '수강', '하고', '있습니다', '.']
+문장을 토큰(Token)으로 나눔, 토큰은 어절, 단어 등으로 목적에 따라 다르게 정의
+
+-불용어 제거(StopWord removal)-
+한국어 stopword 예시) 아, 휴, 아이구, 아이쿠, 아이고, 쉿, 그렇지 않으면, 그러나, 그런데, 하지만,...
+불필요한 단어를 의미하는 불용어(StopWord) 제거
+
+-Bag of Words - 수치 변화-
+자연어 데이터     ->     Bag of Words
+['안녕','만나서']     ->     ['안녕':0, '만나서':1]
+자연어 데이터에 속해있는 단어들의 가방
+
+-토큰 시퀀스-
+자연어 데이터     ->     토큰 시퀀스
+['안녕','만나서','반가워']     ->     [0,1,2]
+Bag of words에서 단어에 해당되는 인덱스로 변환
+모든 문장의 길이를 맞추기 위해 기준보다 짧은 문장에는 패딩을 수행
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+영화 리뷰 긍정/부정 분류 RNN 모델 - 데이터 전 처리
+import json
+import numpy as np
+import tensorflow as tf
+import data_process
+from keras.datasets import imdb
+from keras.preprocessing import sequence
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 학습용 및 평가용 데이터를 불러오고 샘플 문장을 출력합니다.
+X_train, y_train, X_test, y_test = data_process.imdb_data_load()
+
+"""
+1. 인덱스로 변환된 X_train, X_test 시퀀스에 패딩을 수행하고 각각 X_train, X_test에 저장합니다.
+   시퀀스 최대 길이는 300으로 설정합니다.
+"""
+X_train = sequence.pad_sequences(X_train, maxlen=300, padding='post')
+X_test = sequence.pad_sequences(X_test, maxlen=300, padding='post')
+
+print("\n패딩을 추가한 첫 번째 X_train 데이터 샘플 토큰 인덱스 sequence: \n",X_train[0])
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+자연어 처리를 위한 딥러닝 모델
+
+-워드 임베팅(Word Embedding)의 정의
+
+Bag of Words         ->           Embedding table
+['어머니':0, '아버지':1]      ->    0:[1, 3, 0, -2, 0, 0]
+단순하게 Bag of Words의 인덱스로 정의된 토큰들에게 의미를 부여하는 방식
+
+-기존 다층 퍼셉트론 신경망의 자연어 분류 방식-
+문서1: ['안녕', '만나서', '반가워']
+문서2: ['나도', '만나서', '반가워']
+
+문서1: [[1,3,3,...],[3,-1,0,...],[0,-2,6,...]]
+문서2: [[-1,2,0,...],[3,-1,0,...],[0,-2,6,...]]
+
+자연어 문장을 기존 MLP 모델에 적용시키기에는 한계가 있음
+토큰 간의 순서와 관계를 적용할 수 있는 모델은 없을까? RNN
+
+-자연어 분류를 위한 순환 신경망(Recurrent Neural Network)-
+기존 퍼셉트론 계산과 비슷하게 X 입력 데이터를 받아 Y를 출력
+
+-순환 신경망의 입출력 구조-
+출력 값을 두 갈래로 나뉘어 신경망에게 '기억'하는 기능을 부여
+
+-순환 신경망 기반 자연어 분류 예시-
+Ex) input: [ [수업], [이], [너무], [재밌어] ] label: [1] (0:부정, 긍정)
+
+임베딩(전처리)      - RNN          - 활성함수
+  특징              기억, 딥러닝        softmax, sigmoid
+
+-순환 신경망 기반 다양한 자연어 처리 기술-
+Image captioning, Chat bot
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+영화 리뷰 긍정/부정 분류 RNN 모델 - 모델 학습
+import json
+import numpy as np
+import tensorflow as tf
+import data_process
+from keras.datasets import imdb
+from keras.preprocessing import sequence
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+# 학습용 및 평가용 데이터를 불러오고 샘플 문장을 출력합니다.
+X_train, y_train, X_test, y_test = data_process.imdb_data_load()
+
+max_review_length = 300
+
+# 패딩을 수행합니다.
+X_train = sequence.pad_sequences(X_train, maxlen=max_review_length, padding='post')
+X_test = sequence.pad_sequences(X_test, maxlen=max_review_length, padding='post')
+
+
+embedding_vector_length = 32
+
+"""
+1. 모델을 구현합니다.
+   임베딩 레이어 다음으로 `SimpleRNN`을 사용하여 RNN 레이어를 쌓고 노드의 개수는 5개로 설정합니다. 
+   Dense 레이어는 0, 1 분류이기에 노드를 1개로 하고 activation을 'sigmoid'로 설정되어 있습니다.
+"""
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Embedding(1000, embedding_vector_length, input_length = max_review_length),
+    tf.keras.layers.SimpleRNN(5),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+
+# 모델을 확인합니다.
+print(model.summary())
+
+# 학습 방법을 설정합니다.
+model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+# 학습을 수행합니다.
+model_history = model.fit(X_train, y_train, epochs = 3, verbose = 2)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+영화 리뷰 긍정/부정 분류 RNN 모델 - 평가 및 예측
+import json
+import numpy as np
+import tensorflow as tf
+import data_process
+from keras.datasets import imdb
+from keras.preprocessing import sequence
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+# 학습용 및 평가용 데이터를 불러오고 샘플 문장을 출력합니다.
+X_train, y_train, X_test, y_test = data_process.imdb_data_load()
+
+max_review_length = 300
+
+# 패딩을 수행합니다.
+X_train = sequence.pad_sequences(X_train, maxlen=max_review_length, padding='post')
+X_test = sequence.pad_sequences(X_test, maxlen=max_review_length, padding='post')
+
+
+embedding_vector_length = 32
+
+
+# 모델을 구현합니다.
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Embedding(1000, embedding_vector_length, input_length = max_review_length),
+    tf.keras.layers.SimpleRNN(5),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+
+# 모델을 확인합니다.
+print(model.summary())
+
+# 학습 방법을 설정합니다.
+model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+# 학습을 수행합니다.
+model_history = model.fit(X_train, y_train, epochs = 5, verbose = 2)
+
+"""
+1. 평가용 데이터를 활용하여 모델을 평가합니다.
+   loss와 accuracy를 계산하고 loss, test_acc에 저장합니다.
+"""
+loss, test_acc = model.evaluate(X_test, y_test, verbose = 2)
+
+"""
+2. 평가용 데이터에 대한 예측 결과를 predictions에 저장합니다.
+"""
+predictions = model.predict(X_test)
+
+# 모델 평가 및 예측 결과를 출력합니다.
+print('\nTest Loss : {:.4f} | Test Accuracy : {}'.format(loss, test_acc))
+print('예측한 Test Data 클래스 : ',1 if predictions[0]>=0.5 else 0)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+중요한 것만 기억하는 RNN - LSTM
+import json
+import numpy as np
+import tensorflow as tf
+import data_process
+from keras.datasets import imdb
+from keras.preprocessing import sequence
+
+import logging, os
+logging.disable(logging.WARNING)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+# 동일한 실행 결과 확인을 위한 코드입니다.
+np.random.seed(123)
+tf.random.set_seed(123)
+
+'''
+1. 데이터를 불러옵니다.
+'''
+
+# 학습용 및 평가용 데이터를 불러오고 샘플 문장을 출력합니다.
+X_train, y_train, X_test, y_test = data_process.imdb_data_load()
+
+max_review_length = 300
+
+# 패딩을 수행합니다.
+X_train = sequence.pad_sequences(X_train, maxlen=max_review_length, padding='post')
+X_test = sequence.pad_sequences(X_test, maxlen=max_review_length, padding='post')
+
+
+embedding_vector_length = 128
+
+'''
+2. SimpleRNN 모델을 학습해봅니다.
+'''
+
+# SimpleRNN 모델을 구현합니다.
+simpleRNN_model = tf.keras.models.Sequential([
+    tf.keras.layers.Embedding(1000, embedding_vector_length, input_length = max_review_length),
+    tf.keras.layers.SimpleRNN(5),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+
+# 학습 방법을 설정합니다.
+simpleRNN_model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+# 학습을 수행합니다.
+simpleRNN_model.fit(X_train, y_train, epochs = 5, verbose = 2)
+
+# 평가용 데이터를 활용하여 모델을 평가합니다
+loss, test_acc = simpleRNN_model.evaluate(X_test, y_test, verbose = 0)
+
+# 모델 평가 및 예측 결과를 출력합니다.
+print('\nSimpleRNN Test Loss : {:.4f} | Test Accuracy : {}'.format(loss, test_acc))
+
+'''
+3. LSTM 모델을 학습해봅니다.
+'''
+
+# LSTM 모델을 구현합니다.
+LSTM_model = tf.keras.models.Sequential([
+    tf.keras.layers.Embedding(1000, embedding_vector_length, input_length = max_review_length),
+    tf.keras.layers.SimpleRNN(5),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+
+# 학습 방법을 설정합니다.
+LSTM_model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+# 학습을 수행합니다.
+LSTM_model.fit(X_train, y_train, epochs = 5, verbose = 2)
+
+# 평가용 데이터를 활용하여 모델을 평가합니다
+loss, test_acc = LSTM_model.evaluate(X_test, y_test, verbose = 2)
+
+# 모델 평가 및 예측 결과를 출력합니다.
+print('\nLSTM Test Loss : {:.4f} | Test Accuracy : {}'.format(loss, test_acc))
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+
+
+
+
+
+
+
+
+
+
+
