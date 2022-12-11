@@ -1,3 +1,8 @@
+○ 응시자명 : 이호진
+
+○ 시험응시 코드 : 13036
+
+
 1.   <자기소개>
 Let me introduce my self.
 My name is hojin lee
@@ -96,9 +101,140 @@ It will be held at Keimyung Art Hall.
 Let's meet after getting off at Exit 5 of Subway Line 2.
 
 
+5. 자기 계발서
+I often read python and r books.
+It helps me with my coding skills.
+I am currently learning big data and will continue to study, so I need to build knowledge.
 
 
+5. 정신적으로나 육체적으로 건강한 삶을 유지하기 위해 수행하는 활동 조치과정
+
+나는 운동을 일주일에 5번은 한다.
+건강과 체력을 유지하기 위해서이다.
+풋살도 매주 1번씩은 꼭 한다.
+운동은 하면 정신적, 육체적으로 건강해진다.
+팔과 다리를 풀고, 마음을 비운다.
+
+I exercise five times a week.
+It is to maintain good health and stamina.
+I always play futsal once a week.
+Exercise makes you mentally and physically healthy.
+stretching my arms and legs, empty my mind.
+
+8. 학생 수업
+
+나는 수업을 선택할 때 먼저 이것에 흥미가 있는지 생각한다.
+좋게는 나의 취미 생활이 될 수 있을지 생각한다.
+나에게 도움이 된다면 수업을 듣고 최선을 다한다.
+이것이 나의 소중한 한가지가 될 것이다.
+노력하고 또 노력한다.
+
+When I choose a class, I think about whether I am interested in it first.
+I wonder if it can be my hobby.
+If it helps me, I take classes and do my best.
+This will be my precious one.
+Try and try.
 
 
+11. 크리스마스
+
+크리스마스에 난 교회에 간다.
+나는 기독교이고 예수님이 태어나신 날이기 때문이다.
+별 일 이 없는 이상, 나는 크리스마스를 가족들과 보낸다.
+일년에 한번, 세계의 기념일
+올해도 곧 다가온다.
+기대가 된다.
+
+At Christmas I go to church.
+Because I am Christian and it is the day Jesus was born.
+As long as nothing happens, I spend Christmas with my family.
+Once a year, the world's anniversary
+This year is coming soon, too.
+I'm looking forward to it.
 
 
+11. 어플리케이션
+카카오 어플을 많이 사용한다.
+카카오톡을 이용하면 메시지 대신 메신저 역할을 할 수 있다.
+또한 카카오 택시를 통해 택시를 부를 수 있고,
+요즘은 카카오페이로 친구들과 정산도 가능하다.
+너무나 유용하기에 한국인의 90%는 이것을 사용할 것이다.
+
+I use Kakao application a lot.
+If i use Kakao Talk, i can act as a messenger instead of a message.
+Also, i can call a taxi through Kakao Taxi,
+These days, i can pay with my friends through Kakao Pay.
+It is so useful that 90 percent of Koreans will use it.
+
+
+11. 어떤 종류의 휴가를 선호하는가
+나는 여행 가는 것을 좋아한다.
+나의 MBTI는 ENFP이다
+E는 외향적이기에 집에 있는 것을 싫어한다.
+집에 있으면 답답하지만, 바깥에 나가면 속이 트인다.
+여행을 떠나 새로운 것을 경험하고,
+새로운 것을 보면 마음이 편안해진다
+여행을 떠나자!
+
+I like going on a travel.
+My MBTI is ENFP
+E is outgoing and hates staying at home.
+It's frustrating to stay home, but when I go outside, I feel refreshed.
+Go on a trip and experience something new,
+I feel happy when I see something.
+Let's go on a trip!
+
+
+14. 불법 체류 외국인
+한국은 세계에서 좋은 의료기술을 가지고 있다.
+따라서 감염 된 사람에게 위로금도 주었다.
+현재까지는 3차 백신이 접종되었고,
+다른 나라에 비해선 피해가 적다.
+따라서 외국인들이 우리나라에서 작은 혜택을 얻으려고 있는 것 같다.
+
+Korea has good medical technology in the world.
+It also gave consolation money to the infected person.
+So far, the vaccine has been 3 inoculated
+There is less damage compared to other countries.
+Therefore, it seems that foreigners are trying to get small benefits in our country.
+
+
+14. 출산율
+요즘은 개인주의적인 시대이다.
+그리고 물가율 상승, 부동산 상승이 원인이라 생각한다.
+아파트 살 돈도 없는데 왜 그렇게 아파트를 많이 짓는지 모르겠다.
+정부에서의 지원도 있는 것으로 알지만,
+좀 더 효과적인 지원과 경제 인식이 필요 할 것 같다.
+젊은이들도 출산에 대한 생각을 다시 해 볼 필요가 있다.
+
+These are individualistic times.
+And I think it's because of rising prices and rising real estate.
+I don't know why they build so many apartments when they don't even have the money to buy one.
+I know there's support from the government
+More effective support and economic awareness are likely to be needed.
+Young people also need to rethink the idea of childbirth.
+Let's all work together.
+
+
+투자 붐, 암호 화폐
+
+월급을 받아서 집을 사기도 힘들고,
+가족을 부양하기도 힘든 시대이다.
+뉴스를 통해 주식이나 암호화폐를 보면
+우리가 생각하기에 돈을 많이 벌 수 있다고 생각한다.
+하지만 너무나 쉽게 돈을 벌려 하는 생각도 조심해야한다.
+금리가 현재는 다시 높아졌지만
+코로나 때 금리가 많이 낮았기 때문에
+투자가 더 좋은 선택이라고 생각했던 것 같다.
+투자를 함에 있어서 신중히 생각하자
+이것이 인생을 망칠 수 도 있다.
+
+It's hard to buy a house and support a family.
+If you look at stocks and cryptocurrencies on the news,
+we think we can make a lot of money.
+But we should also be careful about the idea that we can make money too easily.
+Interest rates have now risen again
+Interest rates were really low during COVID-19
+I think I thought investment was a better option.
+Let's think carefully when it comes to investing
+This could ruin ours life.
